@@ -1,7 +1,7 @@
 """
 Module properties.py — Vérification des propriétés d'un automate
 
-Responsable : Membre 2
+Responsable : Romain
 
 Ce module regroupe les trois tests demandés par le sujet :
     - Déterministe ?
@@ -38,7 +38,7 @@ def is_deterministic(af: Automaton) -> tuple[bool, list[str]]:
         ...         print(r)
         "L'état 0 avec le symbole 'a' a plusieurs transitions : ['0', '1']"
     """
-    raise NotImplementedError("TODO (Membre 2) : Implémenter is_deterministic()")
+    raise NotImplementedError("TODO (Romain) : Implémenter is_deterministic()")
 
 
 def is_standard(af: Automaton) -> bool:
@@ -54,7 +54,7 @@ def is_standard(af: Automaton) -> bool:
     Returns:
         True si l'automate est standard, False sinon.
     """
-    raise NotImplementedError("TODO (Membre 2) : Implémenter is_standard()")
+    raise NotImplementedError("TODO (Romain) : Implémenter is_standard()")
 
 
 def is_complete(af: Automaton) -> tuple[bool, list[str]]:
@@ -81,4 +81,4 @@ def is_complete(af: Automaton) -> tuple[bool, list[str]]:
         ...         print(r)
         "Pas de transition depuis l'état '1' avec le symbole 'b'"
     """
-    raise NotImplementedError("TODO (Membre 2) : Implémenter is_complete()")
+    raise NotImplementedError("TODO (Romain) : Implémenter is_complete()")

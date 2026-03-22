@@ -1,7 +1,7 @@
 """
 Tests pour standardize.py
 
-Responsable : Membre 2 (compléter ces tests)
+Responsable : Romain (compléter ces tests)
 """
 
 from automaton.models import Automaton
