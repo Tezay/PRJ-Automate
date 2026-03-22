@@ -313,7 +313,7 @@ def standardize(af: Automaton) -> Automaton:
 
 ---
 
-### Membre 3 — `determinize.py`
+### Edouard — `determinize.py`
 
 ```python
 def complete(af: Automaton) -> Automaton:
@@ -463,7 +463,7 @@ Les réponses automatiques simulées :
 main                             ← branche principale (toujours stable)
  ├── feat/models-reader-display  ← Eliot Cup.
  ├── feat/properties-standardize ← Romain
- ├── feat/determinize            ← Membre 3
+ ├── feat/determinize            ← Edouard
  ├── feat/minimize               ← Membre 4
  └── feat/recognize-complement-main ← Membre 5
 ```
@@ -564,7 +564,7 @@ Semaine 1 :
 
 Semaine 2 :
   → Romain : properties.py + standardize.py
-  → Membre 3 : determinize.py
+  → Edouard : determinize.py
   → Membre 4 : minimize.py
   → Membre 5 : recognize.py + complement.py
 
