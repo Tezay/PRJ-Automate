@@ -1,7 +1,7 @@
 """
 Tests pour determinize.py — complete() et determinize_and_complete()
 
-Responsable : Membre 3 (compléter ces tests)
+Responsable : Edouard (compléter ces tests)
 """
 
 from automaton.models import Automaton

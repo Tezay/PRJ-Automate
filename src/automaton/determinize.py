@@ -1,7 +1,7 @@
 """
 Module determinize.py — Déterminisation et complétion d'un automate
 
-Responsable : Membre 3
+Responsable : Edouard
 
 Ce module fournit deux fonctions :
     - complete()                   : pour un DFA incomplet → DFA complet
@@ -46,7 +46,7 @@ def complete(af: Automaton) -> Automaton:
     Returns:
         Un nouvel Automaton déterministe et complet.
     """
-    raise NotImplementedError("TODO (Membre 3) : Implémenter complete()")
+    raise NotImplementedError("TODO (Edouard) : Implémenter complete()")
 
 
 def determinize_and_complete(af: Automaton) -> tuple[Automaton, dict[str, list[str]]]:
@@ -65,5 +65,5 @@ def determinize_and_complete(af: Automaton) -> tuple[Automaton, dict[str, list[s
               Ex: {"0.1": ["0", "1"], "2": ["2"], "P": []}
     """
     raise NotImplementedError(
-        "TODO (Membre 3) : Implémenter determinize_and_complete()"
+        "TODO (Edouard) : Implémenter determinize_and_complete()"
     )
