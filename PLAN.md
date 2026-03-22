@@ -283,7 +283,7 @@ Exemple d'affichage attendu :
 
 ---
 
-### Membre 2 — `properties.py` + `standardize.py`
+### Romain — `properties.py` + `standardize.py`
 
 **`properties.py`** — Tests sur l'automate
 ```python
@@ -462,7 +462,7 @@ Les réponses automatiques simulées :
 ```
 main                             ← branche principale (toujours stable)
  ├── feat/models-reader-display  ← Eliot Cup.
- ├── feat/properties-standardize ← Membre 2
+ ├── feat/properties-standardize ← Romain
  ├── feat/determinize            ← Membre 3
  ├── feat/minimize               ← Membre 4
  └── feat/recognize-complement-main ← Membre 5
@@ -563,7 +563,7 @@ Semaine 1 :
   → Membres 2, 3, 4, 5 : peuvent commencer dès que models.py est mergé sur main
 
 Semaine 2 :
-  → Membre 2 : properties.py + standardize.py
+  → Romain : properties.py + standardize.py
   → Membre 3 : determinize.py
   → Membre 4 : minimize.py
   → Membre 5 : recognize.py + complement.py
