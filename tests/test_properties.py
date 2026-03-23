@@ -1,7 +1,7 @@
 """
 Tests pour properties.py — is_deterministic, is_standard, is_complete
 
-Responsable : Membre 2 (écrire les tests de son propre module)
+Responsable : Romain (écrire les tests de son propre module)
 
 Conseils pour écrire les tests :
     - Créer des automates simples à la main (sans passer par le reader)

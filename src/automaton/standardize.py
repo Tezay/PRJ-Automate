@@ -1,7 +1,7 @@
 """
 Module standardize.py — Standardisation d'un automate
 
-Responsable : Membre 2
+Responsable : Romain
 
 Algorithme de standardisation :
     1. Créer un nouvel état initial nommé "i".
@@ -28,4 +28,4 @@ def standardize(af: Automaton) -> Automaton:
     Returns:
         Un nouvel Automaton standardisé (l'original n'est pas modifié).
     """
-    raise NotImplementedError("TODO (Membre 2) : Implémenter standardize()")
+    raise NotImplementedError("TODO (Romain) : Implémenter standardize()")
