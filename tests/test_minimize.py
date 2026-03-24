@@ -1,7 +1,7 @@
 """
 Tests pour minimize.py
 
-Responsable : Membre 4 (compléter ces tests)
+Responsable : Eliot Cou. (compléter ces tests)
 """
 
 from automaton.models import Automaton

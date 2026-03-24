@@ -1,7 +1,7 @@
 """
 Module minimize.py — Minimisation d'un automate déterministe complet
 
-Responsable : Membre 4
+Responsable : Eliot Cou.
 
 Algorithme des partitions (Moore / table-filling) :
     1. Partition initiale P0 :
@@ -54,4 +54,4 @@ def minimize(afdc: Automaton) -> tuple[Automaton, dict[str, list[str]]]:
             - correspondance (dict[str, list[str]]) : mapping état AFDCM → états AFDC.
               Ex: {"0": ["0"], "1": ["1"], "2": ["2"], "3": ["3", "4"]}
     """
-    raise NotImplementedError("TODO (Membre 4) : Implémenter minimize()")
+    raise NotImplementedError("TODO (Eliot Cou.) : Implémenter minimize()")
