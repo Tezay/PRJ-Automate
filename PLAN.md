@@ -346,7 +346,7 @@ Correspondance états AFDC → états AF d'origine :
 
 ---
 
-### Membre 4 — `minimize.py`
+### Eliot Cou. — `minimize.py`
 
 ```python
 def minimize(afdc: Automaton) -> Automaton:
@@ -464,7 +464,7 @@ main                             ← branche principale (toujours stable)
  ├── feat/models-reader-display  ← Eliot Cup.
  ├── feat/properties-standardize ← Romain
  ├── feat/determinize            ← Edouard
- ├── feat/minimize               ← Membre 4
+ ├── feat/minimize               ← Eliot Cou.
  └── feat/recognize-complement-main ← Membre 5
 ```
 
@@ -565,7 +565,7 @@ Semaine 1 :
 Semaine 2 :
   → Romain : properties.py + standardize.py
   → Edouard : determinize.py
-  → Membre 4 : minimize.py
+  → Eliot Cou. : minimize.py
   → Membre 5 : recognize.py + complement.py
 
 Fin de semaine 2 :
