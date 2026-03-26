@@ -9,6 +9,7 @@ Conseils pour écrire les tests :
     - Un test = une chose vérifiée
 """
 
+
 import pytest
 from automaton.models import Automaton
 from automaton.properties import is_complete, is_deterministic, is_standard
