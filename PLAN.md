@@ -193,12 +193,12 @@ en place). Cela rend le code plus sûr et facile à tester.
 Pour éviter toute complexité de types Python, **les états sont toujours des chaînes
 de caractères (`str`)**, même pour les états simples :
 
-| Situation | Exemple d'état |
-|---|---|
-| Automate d'origine | `"0"`, `"1"`, `"2"` |
+| Situation                            | Exemple d'état               |
+| ------------------------------------ | ---------------------------- |
+| Automate d'origine                   | `"0"`, `"1"`, `"2"`          |
 | État composé (après déterminisation) | `"0.1"`, `"1.2.3"`, `"12.3"` |
-| État puits (après complétion) | `"P"` |
-| État initial (après standardisation) | `"i"` |
+| État puits (après complétion)        | `"P"`                        |
+| État initial (après standardisation) | `"i"`                        |
 
 Le séparateur `.` permet de distinguer `{1,2,3}` → `"1.2.3"` de `{12,3}` → `"12.3"`.
 
@@ -245,30 +245,36 @@ def states_to_label(states: list[str]) -> str:
 **Priorité maximale : les autres membres en dépendent.**
 
 **`models.py`** — Classe `Automaton`
+
 - Définit la classe avec ses attributs (voir section 4)
 - Méthode `__repr__` ou `__str__` utile pour le débogage
 
 **`reader.py`** — Lecture depuis fichier
+
 ```python
 def read_automaton(number: int) -> Automaton:
     """Lit automata/{number}.txt et retourne un Automaton."""
 ```
+
 - Lit le fichier ligne par ligne selon le format décrit en section 3
 - Convertit les numéros d'états entiers en strings : `"0"`, `"1"`, etc.
 - Génère l'alphabet automatiquement : `n` symboles → `['a', 'b', ..., chr(ord('a')+n-1)]`
 - Lève une exception claire si le fichier n'existe pas
 
 **`display.py`** — Affichage dans le terminal avec `rich`
+
 ```python
 def display_automaton(af: Automaton, title: str = "Automate") -> None:
     """Affiche la table de transitions formatée avec rich."""
 ```
+
 - Colonne "État" : préfixe `->` si initial, `<-` si terminal (les deux si les deux)
 - Cellule `--` si aucune transition pour ce (état, symbole)
 - Cellule `"0.1"` si plusieurs destinations (états composés séparés par `.`)
 - Colonnes bien alignées quelle que soit la longueur du contenu
 
 Exemple d'affichage attendu :
+
 ```
 ┌──────────┬──────┬──────┬──────┐
 │ État     │  a   │  b   │  c   │
@@ -286,6 +292,7 @@ Exemple d'affichage attendu :
 ### Romain — `properties.py` + `standardize.py`
 
 **`properties.py`** — Tests sur l'automate
+
 ```python
 def is_deterministic(af: Automaton) -> tuple[bool, list[str]]:
     """Retourne (True/False, liste des raisons si non déterministe).
@@ -302,11 +309,13 @@ def is_complete(af: Automaton) -> tuple[bool, list[str]]:
 ```
 
 **`standardize.py`** — Standardisation
+
 ```python
 def standardize(af: Automaton) -> Automaton:
     """Crée un nouvel état initial 'i', copie les transitions des anciens
     états initiaux vers 'i'. Retourne un nouvel Automaton standardisé."""
 ```
+
 - Le nouvel état initial est nommé `"i"`
 - Si un ancien état initial était terminal, `"i"` est aussi terminal
 - Ne pas modifier l'automate original
@@ -336,6 +345,7 @@ def determinize_and_complete(af: Automaton) -> Automaton:
 ```
 
 Affichage attendu en plus de la table :
+
 ```
 Correspondance états AFDC → états AF d'origine :
   "0"    ← {0}
@@ -356,6 +366,7 @@ def minimize(afdc: Automaton) -> Automaton:
 ```
 
 **Algorithme des partitions :**
+
 1. **P0** : partition initiale = `{états terminaux}` + `{états non terminaux}`
 2. À chaque itération, raffiner chaque groupe : deux états sont dans le même groupe
    si pour chaque symbole ils vont dans le même groupe de la partition courante
@@ -363,6 +374,7 @@ def minimize(afdc: Automaton) -> Automaton:
 4. Chaque groupe devient un état de l'AFDCM (renommé `0`, `1`, `2`...)
 
 Affichage attendu :
+
 ```
 Partition P0 : {3, 4} | {0, 1, 2}
 Partition P1 : {3, 4} | {2} | {0, 1}
@@ -379,20 +391,23 @@ Si l'automate est déjà minimal : afficher `"L'automate est déjà minimal."`.
 
 ---
 
-### Membre 5 — `recognize.py` + `complement.py` + `main.py`
+### Eliot Mass — `recognize.py` + `complement.py` + `main.py`
 
 **`recognize.py`** — Reconnaissance de mots
+
 ```python
 def recognize_word(word: str, afdc: Automaton) -> bool:
     """Simule l'AFDC sur le mot. Retourne True si le mot est reconnu.
     Le mot est lu en entier avant vérification (pas caractère par caractère)."""
 ```
+
 - Partir de l'état initial unique (l'AFDC en a forcément un)
 - Suivre les transitions caractère par caractère
 - À la fin du mot : accepté si l'état courant est terminal
 - Si un caractère n'est pas dans l'alphabet ou pas de transition : refusé
 
 **`complement.py`** — Langage complémentaire
+
 ```python
 def complement(a: Automaton) -> Automaton:
     """Retourne un nouvel automate reconnaissant le langage complémentaire.
@@ -444,11 +459,13 @@ RÉPÉTER indéfiniment :
 ## 7. Script de génération des traces
 
 `run_traces.py` doit :
+
 1. Lister tous les fichiers dans `automata/` (1.txt à 44.txt)
 2. Pour chaque automate, simuler les entrées utilisateur via `subprocess` ou `io.StringIO`
 3. Capturer la sortie et l'écrire dans `traces/trace_X.txt`
 
 Les réponses automatiques simulées :
+
 - Standardisation : `"o"` (oui, si proposé)
 - Mots à tester : une liste de mots prédéfinis puis `"fin"`
 - Continuer : `"n"` (non, pour passer au suivant)
@@ -465,23 +482,26 @@ main                             ← branche principale (toujours stable)
  ├── feat/properties-standardize ← Romain
  ├── feat/determinize            ← Edouard
  ├── feat/minimize               ← Eliot Cou.
- └── feat/recognize-complement-main ← Membre 5
+ └── feat/recognize-complement-main ← Eliot Mass
 ```
 
 ### Commandes Git essentielles
 
 **Mise en place (une seule fois) :**
+
 ```bash
 git clone git@github.com:Tezay/PRJ-Automate.git
 cd PRJ-Automate
 ```
 
 **Créer sa branche de travail :**
+
 ```bash
 git checkout -b feat/minimize    # remplacer "minimize" par votre partie
 ```
 
 **Cycle de travail quotidien :**
+
 ```bash
 # Voir l'état de ses fichiers
 git status
@@ -500,11 +520,13 @@ git push
 ```
 
 **Mettre à jour sa branche avec les dernières modifs de main :**
+
 ```bash
 git pull origin main
 ```
 
 **Convention de messages de commit :**
+
 ```
 feat(module): description courte     ← nouvelle fonctionnalité
 fix(module): description courte      ← correction de bug
@@ -527,12 +549,14 @@ refactor(module): description courte ← refactorisation
 ### ruff — linter et formatter
 
 **À quoi ça sert :**
+
 - **Linter** : analyse le code et signale les problèmes (variables inutilisées,
   imports mal ordonnés, code mort, mauvaises pratiques, etc.)
 - **Formatter** : formate automatiquement le style du code (indentation, espaces,
   guillemets, longueur de lignes) — comme un "correcteur orthographique" pour le style
 
 **Comment l'utiliser (depuis la racine du projet) :**
+
 ```bash
 ruff check .            # affiche les problèmes détectés
 ruff check --fix .      # corrige automatiquement les problèmes simples
@@ -566,10 +590,10 @@ Semaine 2 :
   → Romain : properties.py + standardize.py
   → Edouard : determinize.py
   → Eliot Cou. : minimize.py
-  → Membre 5 : recognize.py + complement.py
+  → Eliot Mass : recognize.py + complement.py
 
 Fin de semaine 2 :
-  → Membre 5 : main.py (intégration de tous les modules)
+  → Eliot Mass : main.py (intégration de tous les modules)
   → Tous : run_traces.py + génération des traces d'exécution
   → Tous : relecture croisée du code, corrections finales
 ```

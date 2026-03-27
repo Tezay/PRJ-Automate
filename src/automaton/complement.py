@@ -1,7 +1,7 @@
 """
 Module complement.py — Automate du langage complémentaire
 
-Responsable : Membre 5
+Responsable : Eliot Mass
 
 Construction de l'automate complémentaire :
     Un automate reconnaissant le langage complémentaire L' s'obtient simplement
