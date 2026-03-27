@@ -1,7 +1,7 @@
 """
 Module recognize.py — Reconnaissance de mots
 
-Responsable : Membre 5
+Responsable : Eliot Mass
 
 Ce module permet de tester si un mot appartient au langage reconnu par un automate
 déterministe complet (AFDC ou AFDCM).
