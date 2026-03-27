@@ -18,6 +18,7 @@ complémentaire a été construit.
 """
 
 from automaton.models import Automaton
+from automaton.properties import is_complete, is_deterministic
 
 
 def complement(a: Automaton) -> Automaton:
@@ -33,4 +34,26 @@ def complement(a: Automaton) -> Automaton:
         Un nouvel Automaton reconnaissant le langage complémentaire.
         L'automate original n'est pas modifié.
     """
-    raise NotImplementedError("TODO (Membre 5) : Implémenter complement()")
+    if not is_complete(a) or not is_deterministic(a):
+        print("Il faut que l'automate soit complet")
+        return
+    # 1. Création d'une nouvelle instance (non-mutabilité)
+    acomp = Automaton()
+    
+    # 2. Copie de la structure existante
+    acomp.alphabet = a.alphabet[:]
+    acomp.states = a.states[:]
+    acomp.initial_states = a.initial_states[:]
+    acomp.transitions = a.transitions.copy()
+    
+    # 3. Inversion des états terminaux
+    # Un état devient terminal dans AComp s'il ne l'était PAS dans A, et inversement.
+    acomp.terminal_states = [s for s in a.states if s not in a.terminal_states]
+    
+    # 4. Identification et affichage du type d'automate source
+    # Si l'état puits "P" est présent, on considère que c'est un AFDCM (Minimal)
+    # Sinon, c'est un AFDC (Complet standard)
+    type_source = "AFDCM" if "P" in a.states else "AFDC"
+    print(f"Construction de l'automate complémentaire à partir d'un {type_source}.")
+    
+    return acomp
