@@ -9,7 +9,6 @@ déterministe complet (AFDC ou AFDCM).
 Règles importantes (sujet) :
     - Le mot est lu EN ENTIER avant vérification.
     - Il ne doit PAS y avoir de lecture caractère par caractère interactive.
-    - L'utilisateur tape "fin" pour terminer la session de reconnaissance.
 """
 
 from automaton.models import Automaton
@@ -33,4 +32,27 @@ def recognize_word(word: str, afdc: Automaton) -> bool:
         ou si aucune transition n'est définie (ne devrait pas arriver sur un AFDC),
         le mot est considéré comme non reconnu.
     """
+    current_state = afdc.initial_states[0]
+
+    # Parcours du mot EN ENTIER
+    for char in word:
+        # 1. Vérification de l'alphabet
+        if char not in afdc.alphabet:
+            return False
+        
+        # 2. Récupération de la transition
+        # .get() permet de gérer proprement une clé absente (retourne None)
+        next_states = afdc.transitions.get((current_state, char))
+        
+        # 3. Mise à jour de l'état (on prend le premier élément de la liste car AFD)
+        if next_states and len(next_states) > 0:
+            current_state = next_states[0]
+        else:
+            # Si aucune transition n'est définie (ne devrait pas arriver sur un AFDC)
+            return False
+
+    # 4. Vérification finale : l'état d'arrivée est-il terminal ?
+    return current_state in afdc.terminal_states
+
+
     raise NotImplementedError("TODO (Membre 5) : Implémenter recognize_word()")
