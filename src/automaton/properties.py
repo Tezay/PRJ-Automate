@@ -12,29 +12,15 @@ Chaque fonction affiche le résultat du test et retourne l'information
 pour que main.py puisse prendre des décisions basées sur ces résultats.
 """
 
-"""
-Pour ces fonctions on corrige les automates suivants : 
-    - 5 (pour les transitions multiples)
-    - 20 (pour multiples entrées)
-    - 22 (à vérifier les conditions à la main)
-    - 26 (à vérifier les conditions à la main)
-    - 35 (pour les epsilons)
-    - 36 (non standard)
-    - 41 (standard)
-"""
-
-from automaton.models import Automaton
+from .models import Automaton
 
 
 def is_deterministic(af: Automaton) -> tuple[bool, list[str]]:
     """Vérifie si l'automate est déterministe et retourne les raisons si non.
 
     Example:
-        >>> ok, raisons = is_deterministic(af)
-        >>> if not ok:
-        ...     for r in raisons:
-        ...         print(r)
-        "L'état 0 avec le symbole 'a' a plusieurs transitions : ['0', '1']"
+        >>> is_deterministic(af)
+        >>> False, "L'état 0 avec le symbole 'a' a plusieurs transitions : ['0', '1']"
     """
 
     #liste message pour contenir les différents problèmes de automate
@@ -44,18 +30,18 @@ def is_deterministic(af: Automaton) -> tuple[bool, list[str]]:
 
     #Arguments de vérification 
     #vérification que automate possède seulement un etat initial sinon on renvoie FALSE
-    if len(Automaton.initial_states) != 1 :
+    if len(af.initial_states) != 1 :
         deterministe = False
-        message.append(f"Nombre d'état initiaux incorrect, {len(Automaton.initial_states)} au lieu de 1.")
+        message.append(f"Nombre d'état initiaux incorrect, {len(af.initial_states)} au lieu de 1.")
     
     #vérification que pour chaque paire (état, symbole), il existe au plus une transition sinon on renvoie FALSE
-    for (etat, symbole), destinations in Automaton.transitions.items() :
+    for (etat, symbole), destinations in af.transitions.items() :
         if len(destinations) > 1 :
             message.append(f"Non déterministe, l'état {etat} possède plusieurs transitions : {destinations}, avec le symbole {symbole}.")
             deterministe = False
     
     #vérification que le symbole espilon n'apparaisse pas dans automate sinon on revoie FALSE
-    for (etat, symbole) in Automaton.transitions.keys() :
+    for (etat, symbole) in af.transitions.keys() :
         if symbole == "" :
             deterministe = False
             message.append(f"Non déterministe, présence symbole vide dans automate depuis etat {etat}.")
@@ -73,15 +59,27 @@ def is_standard(af: Automaton) -> bool:
     Un automate est standard si :
         1. Il possède exactement un seul état initial.
         2. Aucune transition ne pointe vers cet état initial.
-
-    Args:
-        af: L'automate à tester.
-
     Returns:
         True si l'automate est standard, False sinon.
     """
-    raise NotImplementedError("TODO (Romain) : Implémenter is_standard()")
+    #Véfication que automate possède seulement un etat initial sinon on renvoie FALSE
+    if len(af.initial_states) != 1:
+        return False
+    
+    #Vérification que aucune transition ne pointe vers l'état initial
 
+    #On récupère l'état initial
+    initial_state = af.initial_states[0]
+
+    #On vérifie que aucune transition ne pointe vers l'état initial
+    for (etat, symbole), destinations in af.transitions.items():
+        if initial_state in destinations:
+            print(f"Non standard, la transition depuis l'état {etat} avec le symbole {symbole} pointe vers l'état initial {initial_state}.")
+            return False
+    
+    #Si les deux conditions sont satisfaites, l'automate est standard
+    return True
+    
 
 def is_complete(af: Automaton) -> tuple[bool, list[str]]:
     """Vérifie si l'automate déterministe est complet.
@@ -89,11 +87,8 @@ def is_complete(af: Automaton) -> tuple[bool, list[str]]:
     Un automate est complet si pour chaque état et chaque symbole de l'alphabet,
     il existe au moins une transition définie.
 
-    ATTENTION : Cette fonction ne doit être appelée que sur un automate
-    déterministe. Pour un NFA, le résultat n'aurait pas de sens.
-
-    Args:
-        af: L'automate déterministe à tester.
+    ATTENTION : Cette fonction renvoie FALSE si l'automate n'est pas déterministe,
+    car un automate non déterministe ne peut pas être complet.
 
     Returns:
         Un tuple (résultat, raisons) où :
@@ -101,10 +96,27 @@ def is_complete(af: Automaton) -> tuple[bool, list[str]]:
             - raisons (list[str]) : liste des paires (état, symbole) sans transition.
 
     Example:
-        >>> ok, raisons = is_complete(af)
-        >>> if not ok:
-        ...     for r in raisons:
-        ...         print(r)
-        "Pas de transition depuis l'état '1' avec le symbole 'b'"
+        >>> is_complete(af)
+        >>> False, ["Pas de transition depuis l'état '1' avec le symbole 'b'"]
     """
-    raise NotImplementedError("TODO (Romain) : Implémenter is_complete()")
+
+    #Vérification que l'automate est déterministe
+    if not is_deterministic(af):
+        return False, ["L'automate n'est pas déterministe, par conséquent on ne peut pas le compléter;"]
+    
+    #Création de la liste "message" pour stocker les raisons pour lesquelles l'automate n'est pas complet.
+    message = []
+    #Création d'un bool "complet", initialisé à True, pour savoir si l'automate est complet ou non.
+    complet = True
+
+    #Vérification que pour chaque état et chaque symbole de l'alphabet, il existe au moins une transition définie
+    #On parcourt tous les états présent dans l'automate
+    for etat in af.states:
+        #On parcourt tous les symboles de l'alphabet
+        for symbole in af.alphabet:
+            #On vérifie si la paire (état, symbole) existe dans les transitions de l'automate
+            if (etat, symbole) not in af.transitions:
+                message.append(f"Pas de transition depuis l'état '{etat}' avec le symbole '{symbole}'.")
+                complet = False
+    
+    return complet, message
