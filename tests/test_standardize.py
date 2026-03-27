@@ -4,8 +4,8 @@ Tests pour standardize.py
 Responsable : Romain (compléter ces tests)
 """
 
-from automaton.models import Automaton
-from automaton.standardize import standardize
+from src.automaton.models import Automaton
+from src.automaton.standardize import standardize
 
 
 def make_non_standard() -> Automaton:

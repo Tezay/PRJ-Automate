@@ -11,6 +11,8 @@
 2 b 3
 3 a P
 3 b P
+4 a P
+4 b P
 P a P
 P b P
 4 a P
