@@ -35,35 +35,106 @@ Affichage attendu (en plus de la table) :
 from automaton.models import Automaton
 
 
+
+#verifie que les etats 01 et 10 sont traités de la même manière (1.2.3 et 3.2.1 donnent le même label "1.2.3")
+def states_to_label(states_list: list[str]) -> str:
+    if not states_list:
+        return ""
+    # On trie pour que {1,2} et {2,1} donnent toujours "1.2"
+    return ".".join(sorted(list(set(states_list))))
+
+
+
+
+def is_determinize(af: Automaton) -> bool:
+
+    if len(af.initial_states) > 1 or len(af.initial_states) == 0:
+        print("L'automate n'est pas déterministe : plusieurs états initiaux")
+        return False
+    for transition in af.transitions:
+        nb_transitions = len(af.transitions[transition])
+        if nb_transitions > 1:
+            print(f"L'automate n'est pas déterministe : plusieurs transitions pour {transition}")
+            return False
+    print("L'automate est déterministe : une seule transition par (état, symbole)")
+    return True    
+
+
+
+def is_complete(af: Automaton) -> bool:
+    for state in af.states:
+        for symbol in af.alphabet:
+            if (state, symbol) not in af.transitions:
+                print(f"L'automate n'est pas complet : pas de transition pour ({state}, {symbol})")
+                return False
+    print("L'automate est complet : toutes les transitions sont définies")
+    return True
+
+
+
+
+
 def complete(af: Automaton) -> Automaton:
-    """Complète un automate déterministe en ajoutant un état puits "P".
+    af.states.append("P")
+    for state in af.states:
+        for symbol in af.alphabet:
+            if (state, symbol) not in af.transitions:
+                af.transitions[(state, symbol)] = ["P"]
+    
+    for state in af.states:
+        if state != "P":
+            for symbol in af.alphabet:
+                if (state, symbol) not in af.transitions:
+                    af.transitions[(state, symbol)] = ["P"]
+    print("Automate complété :")
+    return af
 
-    À n'appeler que sur un automate déjà déterministe mais incomplet.
 
-    Args:
-        af: L'automate déterministe incomplet.
+def determinize(af: Automaton) -> Automaton:
+    init_list = sorted(list(set(af.initial_states))) 
 
-    Returns:
-        Un nouvel Automaton déterministe et complet.
-    """
-    raise NotImplementedError("TODO (Edouard) : Implémenter complete()")
+    init_label = states_to_label(init_list) 
+
+    queue = [init_list] 
+
+    af.states = [init_label]
+    af.initial_states = [init_label]
+
+    af.transitions = {}
+
+    while queue:
+        groupe_courant_list = queue.pop(0)
+        groupe_courant_label = states_to_label(groupe_courant_list)
+        
+        for symbole in af.alphabet:
+            destinations_possibles = set()
+            for etat in groupe_courant_list:
+                cle = (etat, symbole)
+                if cle in af.transitions:
+                    for dest in af.transitions[cle]:
+                        destinations_possibles.add(dest)            
+            if len(destinations_possibles) != 0:
+                dest_list = sorted(list(destinations_possibles))
+                new_state_label = states_to_label(dest_list)
+                
+                if new_state_label not in af.states:
+                    af.states.append(new_state_label)
+                    queue.append(dest_list)
+                
+                af.transitions[(groupe_courant_label, symbole)] = [new_state_label]
+
+    print("Automate déterminisé :")
+    return af
 
 
 def determinize_and_complete(af: Automaton) -> tuple[Automaton, dict[str, list[str]]]:
-    """Déterminise et complète un automate non déterministe.
 
-    Applique la construction des sous-ensembles (subset construction),
-    puis complète l'automate résultant si nécessaire.
 
-    Args:
-        af: L'automate non déterministe à déterminiser.
+    if is_determinize(af):
+        if is_complete(af):
+            return af,{state: [state] for state in af.states}
+        else:
+            return complete(af),{state: [state] for state in af.states}
+    else:
+        return complete(determinize(af)),{state: [state] for state in af.states}
 
-    Returns:
-        Un tuple (afdc, correspondance) où :
-            - afdc (Automaton) : l'automate déterministe et complet résultant.
-            - correspondance (dict[str, list[str]]) : mapping label AFDC → états AF.
-              Ex: {"0.1": ["0", "1"], "2": ["2"], "P": []}
-    """
-    raise NotImplementedError(
-        "TODO (Edouard) : Implémenter determinize_and_complete()"
-    )
