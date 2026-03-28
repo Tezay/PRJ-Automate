@@ -4,6 +4,7 @@ Tests pour standardize.py
 Responsable : Romain (compléter ces tests)
 """
 
+from src.automaton.properties import is_standard
 from src.automaton.models import Automaton
 from src.automaton.standardize import standardize
 
@@ -53,7 +54,19 @@ class TestStandardize:
         af.alphabet = ["a"]
         af.states = ["0", "1"]
         af.initial_states = ["0"]
-        af.terminal_states = ["0"]  # l'état initial est terminal
+        af.terminal_states = ["0"]
         af.transitions = {("0", "a"): ["1"]}
+    
         sfa = standardize(af)
-        assert "i" in sfa.terminal_states
+    
+        # L'automate résultant est-il standard ?
+        assert is_standard(sfa)
+    
+        # L'état initial est-il unique ?
+        assert len(sfa.initial_states) == 1
+    
+        # L'état initial n'est-il pas terminal ?
+        assert sfa.initial_states[0] in sfa.terminal_states
+    
+        # Le langage reconnu est-il préservé ? (si vous avez une fonction pour ça)
+        # assert same_language(af, sfa)

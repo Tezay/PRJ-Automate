@@ -54,8 +54,7 @@ def standardize(af: Automaton) -> Automaton:
                         
                     af_copy.transitions[key] += destinations
 
-            if etat_initial in af.terminal_states:
-                if"i" not in af_copy.terminal_states:
+            if etat_initial in af.terminal_states and "i" not in af_copy.terminal_states:
                     af_copy.terminal_states.append("i")
 
         af_copy.initial_states = ["i"]
