@@ -53,6 +53,3 @@ def recognize_word(word: str, afdc: Automaton) -> bool:
 
     # 4. Vérification finale : l'état d'arrivée est-il terminal ?
     return current_state in afdc.terminal_states
-
-
-    raise NotImplementedError("TODO (Membre 5) : Implémenter recognize_word()")
