@@ -11,14 +11,14 @@ Format attendu du fichier automata/X.txt :
     Ligne 5 : nombre de transitions
     Lignes suivantes : transitions sous la forme "état_départ symbole état_arrivée"
 
-Exemple (automata/5.txt) :
+Exemple (automata/7.txt) :
     1
     2
     1 1
     1 0
     2
+    1 a 1
     1 a 0
-    0 a 0
 """
 
 import os
@@ -42,4 +42,63 @@ def read_automaton(number: int) -> Automaton:
         FileNotFoundError: Si le fichier automata/{number}.txt n'existe pas.
         ValueError: Si le format du fichier est invalide.
     """
-    raise NotImplementedError("TODO (Eliot Cup.) : Implémenter read_automaton()")
+    path = os.path.normpath(os.path.join(AUTOMATA_DIR, f"{number}.txt"))
+
+    if not os.path.exists(path):
+        raise FileNotFoundError(
+            f"Le fichier automata/{number}.txt n'existe pas."
+        )
+
+    with open(path, encoding="utf-8") as f:
+        lines = []
+        for line in f:
+            cleaned_line = line.strip()
+            if cleaned_line != "":
+                lines.append(cleaned_line)
+
+    try:
+        idx = 0
+        af = Automaton()
+
+        # Ligne 1 : nombre de symboles -> génération de l'alphabet
+        n_symbols = int(lines[idx])
+        idx += 1
+        af.alphabet = [chr(ord("a") + i) for i in range(n_symbols)]
+
+        # Ligne 2 : nombre d'états -> numérotés de 0 à n-1
+        n_states = int(lines[idx])
+        idx += 1
+        af.states = [str(i) for i in range(n_states)]
+
+        # Ligne 3 : états initiaux
+        parts = lines[idx].split()
+        idx += 1
+        n_init = int(parts[0])
+        af.initial_states = [parts[i] for i in range(1, n_init + 1)]
+
+        # Ligne 4 : états terminaux
+        parts = lines[idx].split()
+        idx += 1
+        n_term = int(parts[0])
+        af.terminal_states = [parts[i] for i in range(1, n_term + 1)]
+
+        # Ligne 5 : nombre de transitions
+        n_trans = int(lines[idx])
+        idx += 1
+
+        # Lignes suivantes : transitions "état_départ symbole état_arrivée"
+        for _ in range(n_trans):
+            parts = lines[idx].split()
+            idx += 1
+            from_state, symbol, to_state = parts[0], parts[1], parts[2]
+            key = (from_state, symbol)
+            if key not in af.transitions:
+                af.transitions[key] = []
+            af.transitions[key].append(to_state)
+
+    except (IndexError, ValueError) as e:
+        raise ValueError(
+            f"Format invalide dans automata/{number}.txt : {e}"
+        ) from e
+
+    return af

@@ -2,7 +2,8 @@
 Module models.py — Classe Automaton
 
 Ce module définit la structure de données centrale utilisée dans tout le projet.
-Il est implémenté par le Eliot Cup. et importé par tous les autres modules.
+
+Responsable : Eliot Cup.
 
 Règle fondamentale :
     Les états sont TOUJOURS représentés sous forme de chaînes de caractères (str).
@@ -11,10 +12,9 @@ Règle fondamentale :
     |----------------------------------|--------------------|
     | Automate d'origine               | "0", "1", "2"      |
     | État composé (déterminisation)   | "0.1", "1.2.3"     |
+    | Cellule NFA (destinations mult.) | affiché "0,1"      |
     | État puits (complétion)          | "P"                |
     | Nouvel état initial (standard.)  | "i"                |
-
-    Le séparateur "." permet de distinguer {1,2,3} → "1.2.3" de {12,3} → "3.12".
 """
 
 
@@ -62,7 +62,7 @@ def states_to_label(states: list[str]) -> str:
     """Convertit un ensemble d'états en label textuel pour un état composé.
 
     Trie les états par leur valeur numérique et les joint avec ".".
-    Un ensemble vide retourne "P" (état puits).
+    Un ensemble vide retourne "P" (état poubelle).
 
     Args:
         states: Liste d'états (strings) à combiner.
