@@ -11,7 +11,7 @@ from automaton.minimize import minimize
 
 
 def make_already_minimal_dfa() -> Automaton:
-    """DFA minimal : 0 -a-> 1 (terminal), 0 -b-> 0, 1 -a-> 1, 1 -b-> 0."""
+    #DFA minimal : 0 -a-> 1 (terminal), 0 -b-> 0, 1 -a-> 1, 1 -b-> 0.
     af = Automaton()
     af.alphabet = ["a", "b"]
     af.states = ["0", "1"]
@@ -27,7 +27,7 @@ def make_already_minimal_dfa() -> Automaton:
 
 
 def make_non_minimal_dfa() -> Automaton:
-    """DFA non minimal : états 1 et 2 sont équivalents (même comportement)."""
+    #DFA non minimal : états 1 et 2 sont équivalents (même comportement).
     af = Automaton()
     af.alphabet = ["a"]
     af.states = ["0", "1", "2"]
@@ -42,7 +42,7 @@ def make_non_minimal_dfa() -> Automaton:
 
 
 def make_invalid_dfa_with_two_initial_states() -> Automaton:
-    """Automate invalide pour minimize() : deux états initiaux."""
+    #Automate invalide pour minimize() : deux états initiaux.
     af = Automaton()
     af.alphabet = ["a"]
     af.states = ["0", "1"]
