@@ -8,7 +8,7 @@ Ce module fournit deux fonctions :
     - determinize_and_complete()   : pour un NFA → DFA complet (subset construction)
 
 Algorithme de complétion (complete) :
-    1. Ajouter un état puits "P".
+    1. Ajouter un état poubelle "P".
     2. Pour chaque (état, symbole) sans transition, ajouter une transition vers "P".
     3. Pour l'état "P" lui-même, ajouter une transition vers "P" pour chaque symbole.
 
@@ -23,31 +23,29 @@ Algorithme de déterminisation (determinize_and_complete) :
        c. Si ce label n'est pas encore un état de l'AFDC, l'ajouter à la file.
     4. Un état de l'AFDC est terminal si son groupe contient au moins un état
        terminal de l'AF original.
-    5. Si l'union est vide → état puits "P".
+    5. Si l'union est vide → état poubelle "P".
 
 Affichage attendu (en plus de la table) :
     Correspondance états AFDC → états AF d'origine :
       "0"    ← {0}
       "0.1"  ← {0, 1}
-      "P"    ← {} (état puits)
+      "P"    ← {} (état poubelle)
 """
 
-from automaton.models import Automaton
-
-
-
-#verifie que les etats 01 et 10 sont traités de la même manière (1.2.3 et 3.2.1 donnent le même label "1.2.3")
-def states_to_label(states_list: list[str]) -> str:
-    if not states_list:
-        return ""
-    # On trie pour que {1,2} et {2,1} donnent toujours "1.2"
-    return ".".join(sorted(list(set(states_list))))
-
-
-
+from automaton.models import Automaton, states_to_label
 
 def is_determinize(af: Automaton) -> bool:
+    """Vérifie si un automate est déjà déterministe.
 
+    Un automate est déterministe si pour chaque état et chaque symbole,
+    il existe au plus une transition sortante.
+
+    Args:
+        af: L'automate à vérifier.
+
+    Returns:
+        True si l'automate est déterministe, False sinon.
+    """
     if len(af.initial_states) > 1 or len(af.initial_states) == 0:
         print("L'automate n'est pas déterministe : plusieurs états initiaux")
         return False
@@ -59,9 +57,18 @@ def is_determinize(af: Automaton) -> bool:
     print("L'automate est déterministe : une seule transition par (état, symbole)")
     return True    
 
-
-
 def is_complete(af: Automaton) -> bool:
+    """Vérifie si un automate est complet.
+
+    Un automate est complet si pour chaque état et chaque symbole,
+    il existe au moins une transition sortante.
+
+    Args:
+        af: L'automate à vérifier.
+
+    Returns:
+        True si l'automate est complet, False sinon.
+    """
     for state in af.states:
         for symbol in af.alphabet:
             if (state, symbol) not in af.transitions:
@@ -70,11 +77,18 @@ def is_complete(af: Automaton) -> bool:
     print("L'automate est complet : toutes les transitions sont définies")
     return True
 
-
-
-
-
 def complete(af: Automaton) -> Automaton:
+    """Complète un automate déterministe en ajoutant un état poubelle "P".
+
+    À n'appeler que sur un automate déjà déterministe mais incomplet.
+
+    Args:
+        af: L'automate déterministe incomplet.
+
+    Returns:
+        Un nouvel Automaton déterministe et complet.
+    """
+    print("Complétion en cours...")
     af.states.append("P")
     for state in af.states:
         for symbol in af.alphabet:
@@ -89,23 +103,23 @@ def complete(af: Automaton) -> Automaton:
     print("Automate complété :")
     return af
 
-
 def determinize(af: Automaton) -> Automaton:
+    """Déterminise un automate non déterministe en utilisant la construction des sous-ensembles.
+
+    Args:
+        af: L'automate non déterministe à déterminiser."""
+    
     init_list = sorted(list(set(af.initial_states))) 
-
     init_label = states_to_label(init_list) 
-
     queue = [init_list] 
-
     af.states = [init_label]
     af.initial_states = [init_label]
-
+    old_transitions = af.transitions.copy()
     af.transitions = {}
 
     while queue:
         groupe_courant_list = queue.pop(0)
         groupe_courant_label = states_to_label(groupe_courant_list)
-        
         for symbole in af.alphabet:
             destinations_possibles = set()
             for etat in groupe_courant_list:
@@ -122,14 +136,10 @@ def determinize(af: Automaton) -> Automaton:
                     queue.append(dest_list)
                 
                 af.transitions[(groupe_courant_label, symbole)] = [new_state_label]
-
-    print("Automate déterminisé :")
     return af
 
 
 def determinize_and_complete(af: Automaton) -> tuple[Automaton, dict[str, list[str]]]:
-
-
     if is_determinize(af):
         if is_complete(af):
             return af,{state: [state] for state in af.states}
@@ -137,4 +147,3 @@ def determinize_and_complete(af: Automaton) -> tuple[Automaton, dict[str, list[s
             return complete(af),{state: [state] for state in af.states}
     else:
         return complete(determinize(af)),{state: [state] for state in af.states}
-
