@@ -1,7 +1,7 @@
 """
 main.py — Point d'entrée du programme
 
-Responsable : Membre 5
+Responsable : Eliot Mass
 
 Ce fichier contient la boucle principale du programme.
 Il orchestre tous les modules du package automaton.
