@@ -54,7 +54,6 @@ def is_determinize(af: Automaton) -> bool:
         if nb_transitions > 1:
             print(f"L'automate n'est pas déterministe : plusieurs transitions pour {transition}")
             return False
-    print("L'automate est déterministe : une seule transition par (état, symbole)")
     return True    
 
 def is_complete(af: Automaton) -> bool:
@@ -74,7 +73,6 @@ def is_complete(af: Automaton) -> bool:
             if (state, symbol) not in af.transitions:
                 print(f"L'automate n'est pas complet : pas de transition pour ({state}, {symbol})")
                 return False
-    print("L'automate est complet : toutes les transitions sont définies")
     return True
 
 def complete(af: Automaton) -> Automaton:
@@ -88,7 +86,6 @@ def complete(af: Automaton) -> Automaton:
     Returns:
         Un nouvel Automaton déterministe et complet.
     """
-    print("Complétion en cours...")
     af.states.append("P")
     for state in af.states:
         for symbol in af.alphabet:
@@ -100,7 +97,6 @@ def complete(af: Automaton) -> Automaton:
             for symbol in af.alphabet:
                 if (state, symbol) not in af.transitions:
                     af.transitions[(state, symbol)] = ["P"]
-    print("Automate complété :")
     return af
 
 def determinize(af: Automaton) -> Automaton:
