@@ -99,39 +99,77 @@ def complete(af: Automaton) -> Automaton:
                     af.transitions[(state, symbol)] = ["P"]
     return af
 
+def e_fermeture(states: list[str], af: Automaton) -> list[str]:
+    """
+    Calcule l'ensemble des états accessibles via des epsilon-transitions.
+    On considère que le symbole epsilon est représenté par *.
+    """
+    closure = set(states)
+    stack = list(states)
+    
+    while stack:
+        current = stack.pop()
+        cle = (current, "*")
+        if cle in af.transitions:
+            for next_state in af.transitions[cle]:
+                if next_state not in closure:
+                    closure.add(next_state)
+                    stack.append(next_state)
+    return sorted(list(closure))
+
 def determinize(af: Automaton) -> Automaton:
     """Déterminise un automate non déterministe en utilisant la construction des sous-ensembles.
 
     Args:
         af: L'automate non déterministe à déterminiser."""
     
-    init_list = sorted(list(set(af.initial_states))) 
-    init_label = states_to_label(init_list) 
-    queue = [init_list] 
-    af.states = [init_label]
-    af.initial_states = [init_label]
-    old_transitions = af.transitions.copy()
-    af.transitions = {}
+    initial_closure = e_fermeture(af.initial_states, af)
+    init_label = states_to_label(initial_closure)
+    
+    afd_states = [init_label]
+    afd_transitions = {}
+    queue = [initial_closure]
+    visited = {init_label}
 
     while queue:
-        groupe_courant_list = queue.pop(0)
-        groupe_courant_label = states_to_label(groupe_courant_list)
-        for symbole in af.alphabet:
-            destinations_possibles = set()
-            for etat in groupe_courant_list:
+        current_group = queue.pop(0)
+        current_label = states_to_label(current_group)
+        
+        #On ne boucle que sur les vrais symboles (pas epsilon)
+        alphabet_sans_epsilon = [s for s in af.alphabet if s not in ["", "ε"]]
+        
+        for symbole in alphabet_sans_epsilon:
+            destinations = set()
+            for etat in current_group:
                 cle = (etat, symbole)
                 if cle in af.transitions:
-                    for dest in af.transitions[cle]:
-                        destinations_possibles.add(dest)            
-            if len(destinations_possibles) != 0:
-                dest_list = sorted(list(destinations_possibles))
-                new_state_label = states_to_label(dest_list)
+                    for d in af.transitions[cle]:
+                        destinations.add(d)
+            
+            if destinations:
+                #On calcule la fermeture des destinations trouvées
+                dest_with_epsilon = e_fermeture(list(destinations), af)
+                new_label = states_to_label(dest_with_epsilon)
                 
-                if new_state_label not in af.states:
-                    af.states.append(new_state_label)
-                    queue.append(dest_list)
+                afd_transitions[(current_label, symbole)] = [new_label]
                 
-                af.transitions[(groupe_courant_label, symbole)] = [new_state_label]
+                if new_label not in visited:
+                    visited.add(new_label)
+                    afd_states.append(new_label)
+                    queue.append(dest_with_epsilon)
+
+    new_terminals = []
+    for label in afd_states:
+        components = label.split('.')
+        if any(c in af.terminal_states for c in components):
+            new_terminals.append(label)
+
+    af.states = afd_states
+    af.initial_states = [init_label]
+    af.terminal_states = new_terminals
+    af.transitions = afd_transitions
+    # On nettoie l'alphabet pour enlever epsilon de l'AFD final
+    af.alphabet = [s for s in af.alphabet if s != "*"]    
     return af
 
 
