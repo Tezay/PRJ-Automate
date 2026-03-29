@@ -87,9 +87,6 @@ def is_complete(af: Automaton) -> tuple[bool, list[str]]:
     Un automate est complet si pour chaque état et chaque symbole de l'alphabet,
     il existe au moins une transition définie.
 
-    ATTENTION : Cette fonction renvoie FALSE si l'automate n'est pas déterministe,
-    car un automate non déterministe ne peut pas être complet.
-
     Returns:
         Un tuple (résultat, raisons) où :
             - résultat (bool) : True si complet, False sinon.
@@ -100,10 +97,6 @@ def is_complete(af: Automaton) -> tuple[bool, list[str]]:
         >>> False, ["Pas de transition depuis l'état '1' avec le symbole 'b'"]
     """
 
-    #Vérification que l'automate est déterministe
-    if not is_deterministic(af):
-        return False, ["L'automate n'est pas déterministe, par conséquent on ne peut pas le compléter;"]
-    
     #Création de la liste "message" pour stocker les raisons pour lesquelles l'automate n'est pas complet.
     message = []
     #Création d'un bool "complet", initialisé à True, pour savoir si l'automate est complet ou non.
