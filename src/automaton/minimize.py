@@ -82,21 +82,45 @@ def _print_group_transitions(afdc: Automaton, partition: list[list[str]]) -> Non
 
 def _refine_partition(afdc: Automaton, partition: list[list[str]]) -> list[list[str]]:
     """Raffine une partition à partir des signatures de transitions."""
+
     refined: list[list[str]] = []
 
+    #On traite chaque groupe de la partition actuelle
     for group in partition:
+
         buckets: dict[tuple[int, ...], list[str]] = {}
 
+        #On calcule la signature de chaque état
         for state in group:
-            signature = tuple(
-                _find_group_index(partition, afdc.transitions[(state, symbol)][0])
-                for symbol in afdc.alphabet
-            )
-            buckets.setdefault(signature, []).append(state)
+            signature = tuple()
 
-        split_groups = [_sorted_group(states) for states in buckets.values()]
-        split_groups.sort(key=lambda states: (_state_sort_key(states[0]), len(states)))
-        refined.extend(split_groups)
+            for symbol in afdc.alphabet:
+                destination = afdc.transitions[(state, symbol)][0]
+                group_index = _find_group_index(partition, destination)
+                signature += (group_index,)
+
+
+            if signature not in buckets:
+                buckets[signature] = []
+
+            buckets[signature].append(state)
+
+        #Récupérer les groupes d'états trier 
+        state_groups = []
+
+        #On récupère seulement les valeurs (groupes d'états) du dictionnaire de buckets
+        for states in buckets.values():
+            #On trie les états de chaque groupe selon la convention du projet
+            sorted_states = _sorted_group(states)
+            #On ajoute le groupe trié à 
+            state_groups.append(sorted_states)
+
+        #TRI IMPORTANT POUR STABILITÉ
+        state_groups.sort(key=lambda states: _state_sort_key(states[0]))
+
+        #Ajouter à la partition finale
+        for g in state_groups:
+            refined.append(g)
 
     return refined
 
