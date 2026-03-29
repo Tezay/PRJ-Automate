@@ -1,11 +1,12 @@
 """
 Tests pour determinize.py — complete() et determinize_and_complete()
 
-Responsable : Edouard (compléter ces tests)
+Responsable : Edouard
 """
 
-from automaton.models import Automaton
 from automaton.determinize import complete, determinize_and_complete
+from automaton.models import Automaton
+from automaton.recognize import recognize_word
 
 
 def make_incomplete_dfa() -> Automaton:
@@ -70,7 +71,7 @@ class TestDeterminizeAndComplete:
     def test_result_is_deterministic(self):
         af = make_nfa()
         afdc, _ = determinize_and_complete(af)
-        # Vérifier : un seul état initial, toutes transitions vers 1 état
+        """Vérifier : un seul état initial, toutes transitions vers 1 état"""
         assert len(afdc.initial_states) == 1
         for dests in afdc.transitions.values():
             assert len(dests) == 1
@@ -86,6 +87,28 @@ class TestDeterminizeAndComplete:
         af = make_nfa()
         afdc, correspondance = determinize_and_complete(af)
         assert isinstance(correspondance, dict)
-        # L'état initial de l'AFDC doit être dans la correspondance
+        """L'état initial de l'AFDC doit être dans la correspondance"""
         initial = afdc.initial_states[0]
         assert initial in correspondance
+
+    def test_nfa_produces_expected_states(self):
+        """La subset construction doit produire les états composés attendus."""
+        af = make_nfa()
+
+        afdc, _ = determinize_and_complete(af)
+
+        assert len(afdc.states) == 4
+        assert "0.1" in afdc.states
+
+    def test_nfa_language_preserved(self):
+        """L'AFDC produit doit reconnaître exactement le même langage que le NFA."""
+        af = make_nfa()
+
+        afdc, _ = determinize_and_complete(af)
+
+        assert recognize_word("ab", afdc) is True
+        assert recognize_word("aab", afdc) is True
+        assert recognize_word("aba", afdc) is True
+        assert recognize_word("b", afdc) is False
+        assert recognize_word("a", afdc) is False
+        assert recognize_word("", afdc) is False

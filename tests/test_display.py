@@ -1,8 +1,6 @@
 """Tests pour display.py — display_automaton()
 
-On teste principalement que la fonction ne lève pas d'exception (smoke tests)
-et que la cellule de transition produit le bon contenu via la logique interne.
-Tester la sortie visuelle rich n'est pas pratique en test unitaire.
+Responsable : Eliot Cup.
 """
 
 from io import StringIO

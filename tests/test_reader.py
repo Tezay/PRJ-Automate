@@ -1,5 +1,7 @@
 """Tests pour reader.py — read_automaton()
 
+Responsable : Eliot Cup.
+
 Utilise les vrais fichiers automata/ fournis sur Moodle.
 Chaque test cible un comportement précis du parser.
 """
