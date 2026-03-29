@@ -22,7 +22,7 @@ AUTOMATA_DIR = "automata"
 TRACES_DIR = "traces"
 
 # Mots testés automatiquement pour chaque automate (adapter si besoin)
-TEST_WORDS = ["a", "b", "aa", "ab", "ba", "bb", "aaa", ""]
+TEST_WORDS = ["a", "b", "c", "d", "aa", "ab", "ac", "ba", "bb", "bc", "cd", "aaa", "abc", "abcd", ""]
 
 
 def get_automaton_numbers() -> list[int]:
