@@ -114,15 +114,6 @@ class TestIsComplete:
         assert ok is False
         assert len(raisons) > 0
 
-    def test_is_complete_returns_false_for_nda(self):
-        """is_complete() doit retourner False pour un automate non déterministe."""
-        af = make_complete_nfa()
-
-        ok, raisons = is_complete(af)
-
-        assert ok is False
-        assert len(raisons) > 0
-
     def test_complete_nfa(self):
         """Un NFA (automate non déterministe fini) peut être complet (au moins une transition par (état, symbole))."""
         af = Automaton()
