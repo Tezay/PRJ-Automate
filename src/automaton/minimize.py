@@ -24,13 +24,13 @@ Algorithme des partitions (Moore / table-filling) :
 Affichage attendu :
     Partition P0 : {3, 4} | {0, 1, 2}
     Partition P1 : {3, 4} | {2} | {0, 1}
-    Partition P2 : {3, 4} | {2} | {0} | {1}  ← stable
+    Partition P2 : {3, 4} | {2} | {0} | {1}  <- stable
 
-    Table de correspondance AFDCM → AFDC :
-      État "0" ← groupe {0}
-      État "1" ← groupe {1}
-      État "2" ← groupe {2}
-      État "3" ← groupe {3, 4}
+    Table de correspondance AFDCM -> AFDC :
+      État "0" <- groupe {0}
+      État "1" <- groupe {1}
+      État "2" <- groupe {2}
+      État "3" <- groupe {3, 4}
 
 Si l'automate est déjà minimal (P0 == partition finale) :
     Afficher "L'automate est déjà minimal."
@@ -39,23 +39,28 @@ Si l'automate est déjà minimal (P0 == partition finale) :
 from automaton.models import Automaton
 
 
-def _state_sort_key(state: str) -> int | str:
-    #Retourne une clé de tri cohérente pour les noms d'états.
-    return int(state) if state.isdigit() else state
+def _state_sort_key(state: str) -> tuple[int, int | str]:
+    """Clé de tri pour les noms d'états.
+
+    Returns:
+        Un tuple (type, valeur) où type=0 pour les états numériques
+        et type=1 pour les états non numériques.
+    """
+    return (0, int(state)) if state.isdigit() else (1, state)
 
 
 def _sorted_group(group: list[str]) -> list[str]:
-    #Trie un groupe d'états selon la convention du projet.
+    """Trie un groupe d'états selon la convention du projet."""
     return sorted(group, key=_state_sort_key)
 
 
 def _format_partition(partition: list[list[str]]) -> str:
-    #Formate une partition pour l'affichage demandé.
+    """Formate une partition pour l'affichage demandé."""
     return " | ".join("{" + ", ".join(group) + "}" for group in partition)
 
 
 def _find_group_index(partition: list[list[str]], state: str) -> int:
-    #Retourne l'indice du groupe contenant l'état donné.
+    """Retourne l'indice du groupe contenant l'état donné."""
     for index, group in enumerate(partition):
         if state in group:
             return index
@@ -63,7 +68,7 @@ def _find_group_index(partition: list[list[str]], state: str) -> int:
 
 
 def _print_group_transitions(afdc: Automaton, partition: list[list[str]]) -> None:
-    #Affiche les transitions de chaque état vers les groupes de la partition.
+    """Affiche les transitions de chaque état vers les groupes de la partition."""
     print("Transitions en termes de parties :")
     for group in partition:
         for state in group:
@@ -76,7 +81,7 @@ def _print_group_transitions(afdc: Automaton, partition: list[list[str]]) -> Non
 
 
 def _refine_partition(afdc: Automaton, partition: list[list[str]]) -> list[list[str]]:
-    #Raffine une partition à partir des signatures de transitions.
+    """Raffine une partition à partir des signatures de transitions."""
     refined: list[list[str]] = []
 
     for group in partition:
@@ -108,12 +113,13 @@ def minimize(afdc: Automaton) -> tuple[Automaton, dict[str, list[str]]]:
     Returns:
         Un tuple (afdcm, correspondance) où :
             - afdcm (Automaton) : l'automate minimal résultant.
-            - correspondance (dict[str, list[str]]) : mapping état AFDCM → états AFDC.
+            - correspondance (dict[str, list[str]]) : mapping état AFDCM -> états AFDC.
               Ex: {"0": ["0"], "1": ["1"], "2": ["2"], "3": ["3", "4"]}
     """
     if len(afdc.initial_states) != 1:
         raise ValueError(
-            "La minimisation attend un automate déterministe complet avec un seul état initial."
+            "La minimisation attend un automate déterministe complet "
+            "avec un seul état initial."
         )
 
     terminal_states = _sorted_group(
@@ -132,15 +138,15 @@ def minimize(afdc: Automaton) -> tuple[Automaton, dict[str, list[str]]]:
     print(f"Partition P0 : {_format_partition(partition)}")
     _print_group_transitions(afdc, partition)
 
-    initial_partition = [group[:] for group in partition]
     iteration = 0
 
     while True:
         next_partition = _refine_partition(afdc, partition)
         iteration += 1
         is_stable = next_partition == partition
-        stable_suffix = "  ← stable" if is_stable else ""
-        print(f"Partition P{iteration} : {_format_partition(next_partition)}{stable_suffix}")
+        stable_suffix = "  <- stable" if is_stable else ""
+        formatted = _format_partition(next_partition)
+        print(f"Partition P{iteration} : {formatted}{stable_suffix}")
         _print_group_transitions(afdc, next_partition)
 
         if is_stable:
@@ -149,7 +155,7 @@ def minimize(afdc: Automaton) -> tuple[Automaton, dict[str, list[str]]]:
 
         partition = next_partition
 
-    if initial_partition == final_partition:
+    if len(final_partition) == len(afdc.states):
         print("L'automate est déjà minimal.")
 
     afdcm = Automaton()
@@ -181,9 +187,9 @@ def minimize(afdc: Automaton) -> tuple[Automaton, dict[str, list[str]]]:
             destination_state = group_to_min_state[destination_group_index]
             afdcm.transitions[(source_state, symbol)] = [destination_state]
 
-    print("Table de correspondance AFDCM → AFDC :")
+    print("Table de correspondance AFDCM -> AFDC :")
     for min_state in afdcm.states:
         group = correspondence[min_state]
-        print(f'  État "{min_state}" ← groupe {{{", ".join(group)}}}')
+        print(f'  État "{min_state}" <- groupe {{{", ".join(group)}}}')
 
     return afdcm, correspondence

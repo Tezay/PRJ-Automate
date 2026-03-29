@@ -27,9 +27,14 @@ from automaton.models import Automaton
 _console = Console()
 
 
-def _state_sort_key(state: str) -> int | str:
-    """Clé de tri pour les noms d'états : numérique si possible, sinon alphabétique."""
-    return int(state) if state.isdigit() else state
+def _state_sort_key(state: str) -> tuple[int, int | str]:
+    """Clé de tri pour les noms d'états.
+
+    Returns:
+        Un tuple (type, valeur) où type=0 pour les états numériques
+        et type=1 pour les états non numériques.
+    """
+    return (0, int(state)) if state.isdigit() else (1, state)
 
 
 def display_automaton(af: Automaton, title: str = "Automate") -> None:
