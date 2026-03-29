@@ -205,11 +205,11 @@ ruff format .
 | Fichier de test       | Module testé    | Cas couverts                                          |
 |-----------------------|-----------------|-------------------------------------------------------|
 | `test_models.py`      | `models.py`     | `states_to_label()`, valeurs par défaut               |
-| `test_reader.py`      | `reader.py`     | Alphabet, états, transitions, NFA, erreurs fichier    |
+| `test_reader.py`      | `reader.py`     | Alphabet, états, transitions, AFN, erreurs fichier    |
 | `test_display.py`     | `display.py`    | Affichage sans exception, contenu des cellules        |
-| `test_properties.py`  | `properties.py` | DFA/NFA déterministe, standard, complet               |
+| `test_properties.py`  | `properties.py` | AFD/AFN déterministe, standard, complet               |
 | `test_standardize.py` | `standardize.py`| Préservation du langage, état initial `i`             |
-| `test_determinize.py` | `determinize.py`| Complétion, subset construction, epsilon-NFA          |
+| `test_determinize.py` | `determinize.py`| Complétion, subset construction, epsilon-AFN          |
 | `test_minimize.py`    | `minimize.py`   | Réduction d'états, partitions, état poubelle          |
 | `test_recognize.py`   | `recognize.py`  | Mots acceptés/rejetés, cas limites                    |
 

@@ -63,7 +63,7 @@ class TestDisplayNoException:
         display_automaton(af, title="Init+Term")
 
     def test_nfa_multiple_destinations(self):
-        """NFA avec 2 destinations pour une même (état, symbole)."""
+        """AFN avec 2 destinations pour une même (état, symbole)."""
         af = _make_automaton(
             alphabet=["a"],
             states=["0", "1", "2"],
@@ -71,7 +71,7 @@ class TestDisplayNoException:
             terminal=["2"],
             transitions={("0", "a"): ["1", "2"]},
         )
-        display_automaton(af, title="NFA")
+        display_automaton(af, title="AFN")
 
     def test_afdc_composite_state_names(self):
         """États nommés avec '.' (après déterminisation) — ne doit pas crasher."""
@@ -139,7 +139,7 @@ class TestCellContent:
         assert "1" in output
 
     def test_nfa_multiple_destinations_joined_with_comma(self):
-        # Les destinations multiples d'un NFA sont séparées par ","
+        # Les destinations multiples d'un AFN sont séparées par ","
         # (distinct des états composés après déterminisation, notés avec ".")
         af = _make_automaton(
             alphabet=["a"],

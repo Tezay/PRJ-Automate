@@ -2,9 +2,6 @@
 Tests pour properties.py — is_deterministic, is_standard, is_complete
 
 Responsable : Romain
-
-DFA -> Deterministic Finite Automaton (Automate fini déterministe)
-NFA -> Non-deterministic Finite Automaton (Automate fini non déterministe)
 """
 
 
@@ -13,7 +10,7 @@ from src.automaton.properties import is_complete, is_deterministic, is_standard
 
 
 def make_simple_dfa() -> Automaton:
-    """Crée un DFA simple pour les tests : 0 -a-> 1 (terminal)."""
+    """Crée un AFD simple pour les tests : 0 -a-> 1 (terminal)."""
     af = Automaton()
     af.alphabet = ["a"]
     af.states = ["0", "1"]
@@ -24,7 +21,7 @@ def make_simple_dfa() -> Automaton:
 
 
 def make_nfa_multiple_transitions() -> Automaton:
-    """NFA : état 0 avec 'a' vers 0 ET 1."""
+    """AFN : état 0 avec 'a' vers 0 ET 1."""
     af = Automaton()
     af.alphabet = ["a"]
     af.states = ["0", "1"]
@@ -35,7 +32,7 @@ def make_nfa_multiple_transitions() -> Automaton:
 
 
 def make_complete_nfa() -> Automaton:
-    """NFA complet (toutes les paires (état, symbole) définies) mais non déterministe."""
+    """AFN complet (toutes les paires (état, symbole) définies) mais non déterministe."""
     af = Automaton()
     af.alphabet = ["a"]
     af.states = ["0", "1"]
@@ -49,7 +46,7 @@ def make_complete_nfa() -> Automaton:
 
 
 def make_nfa_multiple_initials() -> Automaton:
-    """NFA : deux états initiaux."""
+    """AFN : deux états initiaux."""
     af = Automaton()
     af.alphabet = ["a"]
     af.states = ["0", "1"]
@@ -83,17 +80,23 @@ class TestIsStandard:
     def test_standard_automaton(self):
         af = make_simple_dfa()
         # Aucune transition ne pointe vers l'état initial "0"
-        assert is_standard(af) is True
+        ok, raisons = is_standard(af)
+        assert ok is True
+        assert raisons == []
 
     def test_non_standard_transition_to_initial(self):
         af = make_simple_dfa()
         # Ajouter une transition qui pointe vers l'état initial
         af.transitions[("1", "a")] = ["0"]
-        assert is_standard(af) is False
+        ok, raisons = is_standard(af)
+        assert ok is False
+        assert len(raisons) > 0
 
     def test_non_standard_multiple_initials(self):
         af = make_nfa_multiple_initials()
-        assert is_standard(af) is False
+        ok, raisons = is_standard(af)
+        assert ok is False
+        assert len(raisons) > 0
 
 
 class TestIsComplete:
@@ -115,7 +118,7 @@ class TestIsComplete:
         assert len(raisons) > 0
 
     def test_complete_nfa(self):
-        """Un NFA (automate non déterministe fini) peut être complet (au moins une transition par (état, symbole))."""
+        """Un AFN (automate non déterministe fini) peut être complet (au moins une transition par (état, symbole))."""
         af = Automaton()
         af.alphabet = ["a"]
         af.states = ["0", "1"]

@@ -9,7 +9,7 @@ from automaton.recognize import recognize_word
 
 
 def make_dfa_ends_with_a() -> Automaton:
-    """DFA qui reconnaît les mots sur {a,b} se terminant par 'a'.
+    """AFD qui reconnaît les mots sur {a,b} se terminant par 'a'.
     États : 0 (initial), 1 (terminal)
     Transitions : 0-a->1, 0-b->0, 1-a->1, 1-b->0
     """

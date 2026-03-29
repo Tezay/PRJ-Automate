@@ -30,7 +30,7 @@ def standardize(af: Automaton) -> Automaton:
         Un nouvel Automaton standardisé (l'original n'est pas modifié).
     """
 
-    #création de la copie de l'automate pour ne pas modifier l'original*
+    # Copie de l'automate pour ne pas modifier l'original
     af_copy = Automaton()
     af_copy.alphabet = af.alphabet.copy()
     af_copy.states = af.states.copy()
@@ -38,33 +38,29 @@ def standardize(af: Automaton) -> Automaton:
     af_copy.terminal_states = af.terminal_states.copy()
     af_copy.transitions = af.transitions.copy()
 
-    #Si l'automate est déjà standard, on retourne une copie sans modification
-    if is_standard(af):
+    already_standard, _ = is_standard(af)
+    if already_standard:
         print("L'automate est déjà standard, aucun changement effectué.")
         return af
-    
-    else:
-        #Création du nouvel état initial "i"
-        af_copy.states.append("i")
 
-        #On parcout les anciens états initiaux pour copier leurs transitions vers "i"
-        for etat_initial in af.initial_states:
-            #Copie des transitions sortantes de l'état initial vers "i"
-            for (etat,symbole), destinations in af.transitions.items():
-                if etat == etat_initial:
-                    key = ("i", symbole)
-                    #Si la clé n'existe pas encore dans les transitions, on l'initialise avec une liste vide
-                    if key not in af_copy.transitions:
-                        af_copy.transitions[key] = []
-                    
-                    #On ajoute les destinations de l'état initial à la clé ("i", symbole)
-                    af_copy.transitions[key] += destinations
+    # Création du nouvel état initial "i"
+    af_copy.states.append("i")
 
-            #Si l'état initial était terminal, "i" doit aussi être terminal
-            if etat_initial in af.terminal_states and "i" not in af_copy.terminal_states:
-                    af_copy.terminal_states.append("i")
+    # Copie des transitions sortantes de chaque ancien état initial vers "i"
+    for etat_initial in af.initial_states:
+        for (etat, symbole), destinations in af.transitions.items():
+            if etat == etat_initial:
+                key = ("i", symbole)
+                if key not in af_copy.transitions:
+                    af_copy.transitions[key] = []
+                # Ajoute les destinations de l'état initial à la clé ("i", symbole)
+                af_copy.transitions[key] += destinations
 
-        #On retire les anciens états initiaux de la liste des états initiaux
-        af_copy.initial_states = ["i"]
-        
+        # Si l'état initial était terminal, "i" doit aussi être terminal
+        if etat_initial in af.terminal_states and "i" not in af_copy.terminal_states:
+            af_copy.terminal_states.append("i")
+
+    # "i" est le seul état initial
+    af_copy.initial_states = ["i"]
+
     return af_copy

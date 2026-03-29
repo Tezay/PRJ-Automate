@@ -11,7 +11,7 @@ from automaton.models import Automaton
 
 
 def make_already_minimal_dfa() -> Automaton:
-    """DFA minimal à 2 états : reconnaît les mots sur {a,b} se terminant par 'a'.
+    """AFD minimal à 2 états : reconnaît les mots sur {a,b} se terminant par 'a'.
 
     Partition finale : [["1"], ["0"]]
     AFDCM : état "0" <- ["1"] (terminal), état "1" <- ["0"] (initial)
@@ -31,7 +31,7 @@ def make_already_minimal_dfa() -> Automaton:
 
 
 def make_non_minimal_dfa() -> Automaton:
-    """DFA non minimal sur {a} : états 1 et 2 équivalents, doivent être fusionnés.
+    """AFD non minimal sur {a} : états 1 et 2 équivalents, doivent être fusionnés.
 
     Partition finale : [["1", "2"], ["0"]]
     AFDCM : état "0" <- ["1", "2"] (terminal), état "1" <- ["0"] (initial)

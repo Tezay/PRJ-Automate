@@ -12,8 +12,8 @@ Règle fondamentale :
     |----------------------------------|--------------------|
     | Automate d'origine               | "0", "1", "2"      |
     | État composé (déterminisation)   | "0.1", "1.2.3"     |
-    | Cellule NFA (destinations mult.) | affiché "0,1"      |
-    | État puits (complétion)          | "P"                |
+    | Cellule AFN (destinations mult.) | affiché "0,1"      |
+    | État poubelle (complétion)       | "P"                |
     | Nouvel état initial (standard.)  | "i"                |
 """
 

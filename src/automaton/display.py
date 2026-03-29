@@ -14,8 +14,8 @@ Comportement attendu pour la colonne "État" :
 Comportement attendu pour les cellules de transitions :
     - "--" si aucune transition depuis cet état pour ce symbole
     - L'état destination si une seule transition (ex: "2")
-    - Les états destination séparés par "," si plusieurs (ex: "0,1") pour les NFA
-      Note : on distingue volontairement "0,1" (cellule NFA = non-déterminisme)
+    - Les états destination séparés par "," si plusieurs (ex: "0,1") pour les AFN
+      Note : on distingue volontairement "0,1" (cellule AFN = non-déterminisme)
       de "0.1" (nom d'un état composé après déterminisation).
 """
 
@@ -76,7 +76,7 @@ def display_automaton(af: Automaton, title: str = "Automate") -> None:
             elif len(dests) == 1:
                 cells.append(dests[0])
             else:
-                # NFA : destinations multiples, jointes par ","
+                # AFN : destinations multiples, jointes par ","
                 sorted_dests = sorted(dests, key=_state_sort_key)
                 cells.append(",".join(sorted_dests))
 
