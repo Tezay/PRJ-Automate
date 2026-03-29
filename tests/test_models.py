@@ -1,4 +1,8 @@
-"""Tests pour models.py — Classe Automaton et states_to_label()"""
+"""
+Tests pour models.py — Classe Automaton et states_to_label()
+
+Responsable : Eliot Cup.
+"""
 
 from automaton.models import Automaton, states_to_label
 
