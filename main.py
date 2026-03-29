@@ -99,10 +99,6 @@ def process_automaton(number: int) -> None:
     print("\n--- Minimisation ---")
     afdcm, correspondance_min = minimize(afdc)
 
-    print("\nCorrespondance états AFDCM → états AFDC :")
-    for etat_min, etats_afdc in correspondance_min.items():
-        print(f"  État \"{etat_min}\" ← {{{', '.join(etats_afdc)}}}")
-
     display_automaton(afdcm, title="Automate Minimal (AFDCM)")
 
     # ── Étape 6 : Reconnaissance de mots ─────────────────────────────────────
