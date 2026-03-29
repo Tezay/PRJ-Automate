@@ -1,7 +1,7 @@
 """
 Tests pour standardize.py
 
-Responsable : Romain (compléter ces tests)
+Responsable : Romain
 """
 
 from src.automaton.models import Automaton
@@ -11,7 +11,7 @@ from src.automaton.standardize import standardize
 
 
 def make_non_standard() -> Automaton:
-    """NFA avec deux états initiaux et une transition vers l'initial."""
+    """AFN avec deux états initiaux et une transition vers l'initial."""
     af = Automaton()
     af.alphabet = ["a", "b"]
     af.states = ["0", "1", "2"]
@@ -26,7 +26,7 @@ def make_non_standard() -> Automaton:
 
 
 def make_non_standard_dfa() -> Automaton:
-    """DFA non standard à 2 états : la transition 1 -b-> 0 pointe vers l'état initial.
+    """AFD non standard à 2 états : la transition 1 -b-> 0 pointe vers l'état initial.
 
     Reconnaît les mots de la forme a(ba)* : "a", "aba", "ababa", ...
     Après standardisation : état "i" remplace "0" comme initial,
@@ -100,7 +100,8 @@ class TestStandardize:
         sfa = standardize(af)
 
         # L'automate résultant est-il standard ?
-        assert is_standard(sfa)
+        ok, _ = is_standard(sfa)
+        assert ok
         # L'état initial est-il unique ?
         assert len(sfa.initial_states) == 1
         # L'état initial n'est-il pas terminal ?

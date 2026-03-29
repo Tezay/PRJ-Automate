@@ -11,7 +11,7 @@ Pour lancer le programme :
 """
 
 from automaton.complement import complement
-from automaton.determinize import complete, determinize_and_complete
+from automaton.determinize import complete, determinize_and_complete, display_correspondence_afdc
 from automaton.display import display_automaton
 from automaton.minimize import minimize
 from automaton.properties import is_complete, is_deterministic, is_standard
@@ -27,8 +27,8 @@ def process_automaton(number: int) -> None:
         1. Lecture et affichage de l'automate (AF)
         2. Test des propriétés : déterministe ? standard ? complet ?
         3. Standardisation si demandée
-        4. Déterminisation et/ou complétion → AFDC
-        5. Minimisation → AFDCM
+        4. Déterminisation et/ou complétion -> AFDC
+        5. Minimisation -> AFDCM
         6. Reconnaissance de mots (boucle)
         7. Construction et affichage de l'automate complémentaire
 
@@ -52,10 +52,15 @@ def process_automaton(number: int) -> None:
     else:
         print("Déterministe : NON")
         for r in raisons_determ:
-            print(f"  → {r}")
+            print(f"  -> {r}")
 
-    standard = is_standard(af)
-    print(f"Standard     : {'OUI' if standard else 'NON'}")
+    standard, raisons_standard = is_standard(af)
+    if standard:
+        print("Standard     : OUI")
+    else:
+        print("Standard     : NON")
+        for r in raisons_standard:
+            print(f"  -> {r}")
 
     if determ:
         complet, raisons_complet = is_complete(af)
@@ -64,7 +69,7 @@ def process_automaton(number: int) -> None:
         else:
             print("Complet      : NON")
             for r in raisons_complet:
-                print(f"  → {r}")
+                print(f"  -> {r}")
 
     # ── Étape 3 : Standardisation (optionnelle) ───────────────────────────────
     if not standard:
@@ -73,7 +78,7 @@ def process_automaton(number: int) -> None:
             af = standardize(af)
             display_automaton(af, title="Automate standardisé")
 
-    # ── Étape 4 : Déterminisation / Complétion → AFDC ─────────────────────────
+    # ── Étape 4 : Déterminisation / Complétion -> AFDC ─────────────────────────
     print("\n--- Déterminisation et complétion ---")
 
     # Re-tester les propriétés sur l'automate courant (potentiellement standardisé)
@@ -84,18 +89,16 @@ def process_automaton(number: int) -> None:
             print("L'automate est déjà déterministe et complet.")
             afdc = af
         else:
-            print("L'automate est déterministe mais incomplet → complétion.")
+            print("L'automate est déterministe mais incomplet -> complétion.")
             afdc = complete(af)
     else:
-        print("L'automate est non déterministe → déterminisation et complétion.")
+        print("L'automate est non déterministe -> déterminisation et complétion.")
         afdc, correspondance = determinize_and_complete(af)
-        print("\nCorrespondance états AFDC → états AF d'origine :")
-        for label, etats in correspondance.items():
-            print(f"  \"{label}\" ← {{{', '.join(etats) if etats else 'vide (état puits)'}}}")
+        display_correspondence_afdc(afdc.states, correspondance)
 
     display_automaton(afdc, title="Automate Déterministe Complet (AFDC)")
 
-    # ── Étape 5 : Minimisation → AFDCM ───────────────────────────────────────
+    # ── Étape 5 : Minimisation -> AFDCM ───────────────────────────────────────
     print("\n--- Minimisation ---")
     afdcm, correspondance_min = minimize(afdc)
 
@@ -110,9 +113,9 @@ def process_automaton(number: int) -> None:
         if mot == "fin":
             break
         if recognize_word(mot, afdc):
-            print(f"  → OUI, \"{mot}\" est reconnu par l'automate.")
+            print(f"  -> OUI, \"{mot}\" est reconnu par l'automate.")
         else:
-            print(f"  → NON, \"{mot}\" n'est pas reconnu par l'automate.")
+            print(f"  -> NON, \"{mot}\" n'est pas reconnu par l'automate.")
 
     # ── Étape 7 : Automate complémentaire ────────────────────────────────────
     print("\n--- Automate complémentaire ---")

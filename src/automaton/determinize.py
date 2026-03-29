@@ -30,8 +30,41 @@ Correspondance retournée :
     Exemple : {"0.1": ["0", "1"], "P": []}
 """
 
+from rich.console import Console
+from rich.table import Table
+
 from .models import Automaton, states_to_label
 from .properties import is_complete, is_deterministic
+
+_console = Console()
+
+
+def display_correspondence_afdc(
+    afdc_states: list[str],
+    correspondence: dict[str, list[str]],
+) -> None:
+    """Affiche la table de correspondance AFDC -> AF d'origine avec rich.
+
+    Chaque ligne associe un état de l'AFDC aux états AF d'origine qu'il regroupe.
+
+    Args:
+        afdc_states: Liste ordonnée des états de l'AFDC (pour l'ordre d'affichage).
+        correspondence: Mapping état AFDC -> liste des états AF d'origine.
+    """
+    table = Table(
+        title="Correspondance AFDC -> AF d'origine",
+        show_header=True,
+        header_style="bold",
+    )
+    table.add_column("État AFDC", justify="center")
+    table.add_column("États AF d'origine", justify="center")
+
+    for state in afdc_states:
+        origins = correspondence.get(state, [])
+        cell = "{" + ", ".join(origins) + "}" if origins else "∅ (état poubelle)"
+        table.add_row(state, cell)
+
+    _console.print(table)
 
 
 def epsilon_closure(states: set[str], transitions: dict) -> set[str]:

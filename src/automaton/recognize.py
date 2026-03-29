@@ -43,7 +43,6 @@ def recognize_word(word: str, afdc: Automaton) -> bool:
             return False
 
         # 2. Récupération de la transition
-        # .get() permet de gérer proprement une clé absente (retourne None)
         next_states = afdc.transitions.get((current_state, char))
 
         # 3. Mise à jour de l'état (on prend le premier élément de la liste car AFD)

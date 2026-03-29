@@ -10,7 +10,7 @@ from automaton.recognize import recognize_word
 
 
 def make_incomplete_dfa() -> Automaton:
-    """DFA déterministe mais incomplet : état 1 sans transition sur 'b'."""
+    """AFD déterministe mais incomplet : état 1 sans transition sur 'b'."""
     af = Automaton()
     af.alphabet = ["a", "b"]
     af.states = ["0", "1"]
@@ -26,7 +26,7 @@ def make_incomplete_dfa() -> Automaton:
 
 
 def make_nfa() -> Automaton:
-    """NFA classique : état 0 --a--> 0 et 1, état 1 --b--> 2 (terminal)."""
+    """AFN classique : état 0 --a--> 0 et 1, état 1 --b--> 2 (terminal)."""
     af = Automaton()
     af.alphabet = ["a", "b"]
     af.states = ["0", "1", "2"]
@@ -41,7 +41,7 @@ def make_nfa() -> Automaton:
 
 
 class TestComplete:
-    def test_adds_puits_state(self):
+    def test_adds_trash_state(self):
         af = make_incomplete_dfa()
         afdc = complete(af)
         assert "P" in afdc.states
@@ -55,7 +55,7 @@ class TestComplete:
                     f"Transition manquante : ({state}, {symbol})"
                 )
 
-    def test_puits_not_terminal(self):
+    def test_trash_not_terminal(self):
         af = make_incomplete_dfa()
         afdc = complete(af)
         assert "P" not in afdc.terminal_states
@@ -101,7 +101,7 @@ class TestDeterminizeAndComplete:
         assert "0.1" in afdc.states
 
     def test_nfa_language_preserved(self):
-        """L'AFDC produit doit reconnaître exactement le même langage que le NFA."""
+        """L'AFDC produit doit reconnaître exactement le même langage que le AFN."""
         af = make_nfa()
 
         afdc, _ = determinize_and_complete(af)

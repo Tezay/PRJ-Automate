@@ -14,7 +14,7 @@ class TestStatestoLabel:
     def test_multiple_states_sorted(self):
         assert states_to_label(["2", "0", "1"]) == "0.1.2"
 
-    def test_empty_is_puits(self):
+    def test_empty_is_trash(self):
         assert states_to_label([]) == "P"
 
     def test_multidigit_sorting(self):

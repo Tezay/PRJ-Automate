@@ -11,7 +11,7 @@ Construction de l'automate complémentaire :
     et inversement.
 
     ATTENTION : Cette opération n'est valide que sur un automate déterministe
-    et complet (AFDC ou AFDCM). Elle ne fonctionnerait pas sur un NFA.
+    et complet (AFDC ou AFDCM). Elle ne fonctionnerait pas sur un AFN.
 
 Le programme doit indiquer à partir de quel automate (AFDC ou AFDCM) le
 complémentaire a été construit.
@@ -34,26 +34,24 @@ def complement(a: Automaton) -> Automaton:
         Un nouvel Automaton reconnaissant le langage complémentaire.
         L'automate original n'est pas modifié.
     """
-    if not is_complete(a) or not is_deterministic(a):
-        print("Il faut que l'automate soit complet")
-        return
-    # 1. Création d'une nouvelle instance (non-mutabilité)
+    comp_ok, _ = is_complete(a)
+    det_ok, _ = is_deterministic(a)
+    if not comp_ok or not det_ok:
+        print("Il faut que l'automate soit complet et déterministe.")
+        return a
+
     acomp = Automaton()
-    
-    # 2. Copie de la structure existante
+
     acomp.alphabet = a.alphabet[:]
     acomp.states = a.states[:]
     acomp.initial_states = a.initial_states[:]
     acomp.transitions = a.transitions.copy()
-    
-    # 3. Inversion des états terminaux
-    # Un état devient terminal dans AComp s'il ne l'était PAS dans A, et inversement.
+
+    # Inversion des états terminaux : terminal dans acomp <-> non-terminal dans a
     acomp.terminal_states = [s for s in a.states if s not in a.terminal_states]
-    
-    # 4. Identification et affichage du type d'automate source
-    # Si l'état puits "P" est présent, on considère que c'est un AFDCM (Minimal)
-    # Sinon, c'est un AFDC (Complet standard)
-    type_source = "AFDCM" if "P" in a.states else "AFDC"
+
+    # L'AFDC conserve l'état "P" et l'AFDCM renomme tous ses états en entiers
+    type_source = "AFDC" if "P" in a.states else "AFDCM"
     print(f"Construction de l'automate complémentaire à partir d'un {type_source}.")
-    
+
     return acomp
