@@ -1,20 +1,13 @@
 """
 Tests pour properties.py — is_deterministic, is_standard, is_complete
 
-Responsable : Romain (écrire les tests de son propre module)
-
-Conseils pour écrire les tests :
-    - Créer des automates simples à la main (sans passer par le reader)
-    - Tester les cas nominaux ET les cas limites (automate vide, 1 seul état...)
-    - Un test = une chose vérifiée
-
+Responsable : Romain
 
 DFA -> Deterministic Finite Automaton (Automate fini déterministe)
 NFA -> Non-deterministic Finite Automaton (Automate fini non déterministe)
 """
 
 
-import pytest
 from src.automaton.models import Automaton
 from src.automaton.properties import is_complete, is_deterministic, is_standard
 
@@ -38,6 +31,20 @@ def make_nfa_multiple_transitions() -> Automaton:
     af.initial_states = ["0"]
     af.terminal_states = ["1"]
     af.transitions = {("0", "a"): ["0", "1"]}
+    return af
+
+
+def make_complete_nfa() -> Automaton:
+    """NFA complet (toutes les paires (état, symbole) définies) mais non déterministe."""
+    af = Automaton()
+    af.alphabet = ["a"]
+    af.states = ["0", "1"]
+    af.initial_states = ["0"]
+    af.terminal_states = ["1"]
+    af.transitions = {
+        ("0", "a"): ["0", "1"],  # non-déterministe
+        ("1", "a"): ["1"],
+    }
     return af
 
 
@@ -107,6 +114,15 @@ class TestIsComplete:
         assert ok is False
         assert len(raisons) > 0
 
+    def test_is_complete_returns_false_for_nda(self):
+        """is_complete() doit retourner False pour un automate non déterministe."""
+        af = make_complete_nfa()
+
+        ok, raisons = is_complete(af)
+
+        assert ok is False
+        assert len(raisons) > 0
+
     def test_complete_nfa(self):
         """Un NFA (automate non déterministe fini) peut être complet (au moins une transition par (état, symbole))."""
         af = Automaton()
@@ -117,7 +133,7 @@ class TestIsComplete:
         # État 1 a UNE transition sur 'a'
         # Comme chaque état a au moins une transition pour 'a', il est COMPLET.
         af.transitions = {
-            ("0", "a"): ["0", "1"], 
+            ("0", "a"): ["0", "1"],
             ("1", "a"): ["0"]
         }
         ok, raisons = is_complete(af)

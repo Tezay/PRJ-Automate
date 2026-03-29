@@ -1,7 +1,7 @@
 """
 Tests pour recognize.py
 
-Responsable : Eliot Mass (compléter ces tests)
+Responsable : Eliot Mass
 """
 
 from automaton.models import Automaton
