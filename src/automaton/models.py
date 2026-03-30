@@ -82,5 +82,5 @@ def states_to_label(states: list[str]) -> str:
     """
     if not states:
         return "P"
-    sorted_states = sorted(states, key=lambda s: int(s))
+    sorted_states = sorted(states, key=lambda s: (0, int(s)) if s.isdigit() else (1, s))
     return ".".join(sorted_states)
